@@ -1,3 +1,4 @@
+
 <html>
 	<head>
 		<title>C Corona</title>
@@ -8,13 +9,15 @@
 			#mycanvas{
 				width:800px;
 				height:600px;
-				background:black;
+			}
+			.level1{
+				background:url("tilemap_level1.png");
 			}
 		</style>
 	</head>
 	<body>
 		<div id="container" >
-			<canvas id="mycanvas">
+			<canvas id="mycanvas" class="level1">
 			</canvas>
 		</div>
 	<script>
@@ -23,22 +26,24 @@
 		const pen = canvas.getContext("2d");
 		window.addEventListener('keydown',this.keyListener,false);
 		var obj = [];
+		var framespeed=100;
 		
 		
 		class Player {
 			  constructor(name,x,y,playr) {
 				if(name=="Bob"){
-					this.per="";
+					this.per="e";
 				}else{
 					this.per="";
 				}
 				this.er = playr;
 				this.name = name;
+				this.turnable = true;
 				this.player_x = x;
 				this.player_y = y;
 				this.step = 10;
 				this.down1 = new Image();
-				this.down1.src = "./down1.png";
+				this.down1.src = "./"+this.per+"down1.png";
 				this.currentview = this.down1;
 				this.draw(0,0);
 				this.eyes = "downn";
@@ -53,32 +58,44 @@
 				var em = this;
 				setTimeout(function(){
 					
-					if(playr.player_x-15>=plr_x  && !collision(em,"right")){
-						if(em.player_x+67<330){
-						requestAnimationFrame(function(){
-							//pen.clearRect(player.player_x, player.player_y, 200, 10);
-							em.walkRight();
-							}
-						);
+					if(playr.player_x-15>=plr_x){
+						if(!collision(em,"right")){
+							if(em.player_x+67<320){
+							requestAnimationFrame(function(){
+								//pen.clearRect(player.player_x, player.player_y, 200, 10);
+								em.walkRight();
+								}
+							);
+							}else{
+									setTimeout(function(){pen.fillRect(em.player_x,em.player_y-2,20,20);pen.drawImage(em.right0,em.player_x,em.player_y,20,20);}, framespeed);
+								}	
 						}
-					}else if(playr.player_x+15<=plr_x && !collision(em,"left")){
-						if(em.player_x-67>-50){
-						requestAnimationFrame(function(){
-							em.walkLeft();
-							}
-						);
+					}else if(playr.player_x+15<=plr_x){
+						if(!collision(em,"left")){
+							if(em.player_x-67>-40){
+							requestAnimationFrame(function(){
+								em.walkLeft();
+								}
+							);
+							}else{
+									setTimeout(function(){pen.fillRect(em.player_x,em.player_y-2,20,20);pen.drawImage(em.left0,em.player_x,em.player_y,20,20);}, framespeed);
+								}	
 						}
-					}else if(playr.player_y-15<=plr_y && !collision(em,"up")){
-						if(em.player_y-67>-50){
-						requestAnimationFrame(function(){
-							//pen.clearRect(player.player_x, player.player_y, 200, 10);
-							em.walkUp();
-							}
-						);
+					}else if(playr.player_y-15<=plr_y){
+						if(!collision(em,"up")){
+							if(em.player_y-67>-50){
+							requestAnimationFrame(function(){
+								//pen.clearRect(player.player_x, player.player_y, 200, 10);
+								em.walkUp();
+								}
+							);
+							}else{
+								setTimeout(function(){pen.fillRect(em.player_x,em.player_y-2,20,20);pen.drawImage(em.up0,em.player_x,em.player_y,20,20);}, framespeed);
+							}	
 						}
 					}else if(playr.player_y+15>=plr_y){
 						if(!collision(em,"down")){
-							if(em.player_y+67<330){
+							if(em.player_y+67<180){
 							requestAnimationFrame(function(){
 								//pen.clearRect(player.player_x, player.player_y, 200, 10);
 								em.walkDown();
@@ -86,13 +103,10 @@
 							);
 							}
 						}else{
-							setTimeout(function(){pen.fillRect(em.player_x,em.player_y-2,20,20-em.step/2);pen.drawImage(em.down1,em.player_x,em.player_y,20,20);}, 100);
+							setTimeout(function(){pen.fillRect(em.player_x,em.player_y-2,20,20);pen.drawImage(em.down1,em.player_x,em.player_y,20,20);}, framespeed);
 						}
-					}else{
-						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.down1,player.player_x,player.player_y,20,20);}, 100);
-						return;
 					}
-					//em.followPlayr(playr);
+					em.followPlayr(playr);
 				},1500)
 			  
 			  }
@@ -151,11 +165,11 @@
 					move = this.left2;
 					this.leftset=2;
 				}
-				setTimeout(function(){pen.fillRect(x+step/2,y,20-step/2,20);pen.drawImage(pos,x,y,20,20);}, 100);
+				setTimeout(function(){pen.fillRect(x+step/2,y,20-step/2,20);pen.drawImage(pos,x,y,20,20);}, framespeed);
 				//setTimeout(function(){pen.fillRect(x+5,y,8,20);}, 150);
-				setTimeout(function(){pen.fillRect(x+step/2,y,20-step/2,20);pen.drawImage(move,x-step/2,y,20,20)}, 300);
+				setTimeout(function(){pen.fillRect(x+step/2,y,20-step/2,20);pen.drawImage(move,x-step/2,y,20,20)}, framespeed*2);
 				//setTimeout(function(){pen.clearRect(0, 0, canvas.width, canvas.height);}, 250);
-				setTimeout(function(){pen.fillRect(x+step/2,y,20-step/2,20);pen.drawImage(pos,x-step,y,20,20)}, 500);
+				setTimeout(function(){pen.fillRect(x+step/2,y,20-step/2,20);pen.drawImage(pos,x-step,y,20,20)}, framespeed*3);
 				this.player_x-=10;
 				this.currentview = this.left0;
 				this.eyes = "left";
@@ -174,11 +188,11 @@
 					move = this.right2;
 					this.rightset=2;
 				}
-				setTimeout(function(){pen.fillRect(x-step/2,y,20-step/2,20);pen.drawImage(pos,x,y,20,20);}, 100);
+				setTimeout(function(){pen.fillRect(x,y,20-step/2,20);pen.drawImage(pos,x,y,20,20);}, framespeed);
 				//setTimeout(function(){pen.fillRect(x+5,y,8,20);}, 150);
-				setTimeout(function(){pen.fillRect(x-step/2,y,20-step/2,20);pen.drawImage(move,x+step/2,y,20,20)}, 300);
+				setTimeout(function(){pen.fillRect(x,y,20-step/2,20);pen.drawImage(move,x+step/2,y,20,20)}, framespeed*2);
 				//setTimeout(function(){pen.clearRect(0, 0, canvas.width, canvas.height);}, 250);
-				setTimeout(function(){pen.fillRect(x-step/2,y,20-step/2,20);pen.drawImage(pos,x+step,y,20,20)}, 500);
+				setTimeout(function(){pen.fillRect(x,y,20-step/2,20);pen.drawImage(pos,x+step,y,20,20)}, framespeed*3);
 				this.player_x+=10;
 				this.currentview = this.right0;
 				this.eyes = "right";
@@ -197,11 +211,11 @@
 					move = this.up2;
 					this.upset=2;
 				}
-				setTimeout(function(){pen.fillRect(x,y+step/2,20,20-step/2);pen.drawImage(pos,x,y,20,20);}, 100);
+				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(pos,x,y,20,20);}, framespeed);
 				//setTimeout(function(){pen.fillRect(x+5,y,8,20);}, 150);
-				setTimeout(function(){pen.fillRect(x,y+step/2,20,20-step/2);pen.drawImage(move,x,y-step/2,20,20)}, 300);
+				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(move,x,y-step/2,20,20)}, framespeed*2);
 				//setTimeout(function(){pen.clearRect(0, 0, canvas.width, canvas.height);}, 250);
-				setTimeout(function(){pen.fillRect(x,y+step/2,20,20-step/2);pen.drawImage(pos,x,y-step,20,20)}, 500);
+				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(pos,x,y-step,20,20)}, framespeed*3);
 				this.player_y-=10;
 				this.currentview = this.up0;
 				this.eyes = "up";
@@ -220,11 +234,11 @@
 					move = this.down2;
 					this.downset=2;
 				}
-				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(pos,x,y,20,20);}, 100);
+				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(pos,x,y,20,20);}, framespeed);
 				//setTimeout(function(){pen.fillRect(x+5,y,8,20);}, 150);
-				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(move,x,y+step/2,20,20)}, 300);
+				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(move,x,y+step/2,20,20)}, framespeed*2);
 				//setTimeout(function(){pen.clearRect(0, 0, canvas.width, canvas.height);}, 250);
-				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(pos,x,y+step,20,20)}, 500);
+				setTimeout(function(){pen.fillRect(x,y,20,20);pen.drawImage(pos,x,y+step,20,20)}, framespeed*3);
 				this.player_y+=10;
 				this.currentview = this.down1;
 				this.eyes = "downn";
@@ -250,53 +264,53 @@
 						console.log("Up");
 						}
 					);
-					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 520);
+					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed*3+20);
 					}else{
-						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.up0,player.player_x,player.player_y,20,20);}, 100);
+						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.up0,player.player_x,player.player_y,20,20);}, framespeed);
 						console.log("Up collision");
-						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 120);
+						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed+20);
 					}
 				}else if(e.keyCode == 37){
-					if(player.player_x-67>-50 && !collision(player,"left")){
+					if(player.player_x-67>-40 && !collision(player,"left")){
 					requestAnimationFrame(function(){
 						//pen.clearRect(player.player_x, player.player_y, 200, 10);
 						player.walkLeft();
 						console.log("Left");
 						}
 					);
-					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 520);
+					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed*3+20);
 					}else{
-						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.left0,player.player_x,player.player_y,20,20);}, 100);
+						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.left0,player.player_x,player.player_y,20,20);}, framespeed);
 						console.log("left collision");
-						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 120);
+						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed+20);
 					}
 				}else if(e.keyCode == 39){
-					if(player.player_x+67<330 && !collision(player,"right")){
+					if(player.player_x+67<320 && !collision(player,"right")){
 					requestAnimationFrame(function(){
 						//pen.clearRect(player.player_x, player.player_y, 200, 10);
 						player.walkRight();
 						console.log("Right");
 						}
 					);
-					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 520);
+					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed*3+20);
 					}else{
-						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.right0,player.player_x,player.player_y,20,20);}, 100);
+						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20-player.step/2);pen.drawImage(player.right0,player.player_x,player.player_y,20,20);}, framespeed);
 						console.log("right collision");
-						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 120);
+						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed+20);
 					}
 				}else if(e.keyCode == 40){
-					if(player.player_y-67<330 && !collision(player,"down")){
+					if(player.player_y+67<180 && !collision(player,"down")){
 					requestAnimationFrame(function(){
 						//pen.clearRect(player.player_x, player.player_y, 200, 10);
 						player.walkDown();
 						console.log("Down");
 						}
 					);
-					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 520);
+					setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed*3+20);
 					}else{
-						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20);pen.drawImage(player.down1,player.player_x,player.player_y,20,20);}, 100);
+						setTimeout(function(){pen.fillRect(player.player_x,player.player_y+1,20,20);pen.drawImage(player.down1,player.player_x,player.player_y,20,20);}, framespeed);
 						console.log("Down collision");
-						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, 120);
+						setTimeout(function(){window.addEventListener('keydown',this.keyListener,false);}, framespeed+20);
 					}
 				}
 				
@@ -305,21 +319,44 @@
 			function collision(ob,dir){
 				if(dir=="down"){
 					for(var i=0;i<obj.length;i++){
-						if(ob.player_y+30>obj[i].player_y && ((ob.player_x>=obj[i].player_x && ob.player_x<=obj[i].player_x+18) ||
+						if((ob.player_y+30>obj[i].player_y && ob.player_y+30<obj[i].player_y+30) && ((ob.player_x>=obj[i].player_x && ob.player_x<=obj[i].player_x+18) ||
 							(ob.player_x+20>=obj[i].player_x+2 && ob.player_x+20<=obj[i].player_x+18)) && obj[i]!=ob){
-							console.log("boom");
-							console.log(obj[i]);
-							console.log(ob);
+							if(obj[i].turnable){
+								setTimeout(function(){pen.fillRect(obj[i].player_x,obj[i].player_y-2,20,20);pen.drawImage(obj[i].up0,obj[i].player_x,obj[i].player_y,20,20);}, framespeed);
+							}
 							return true;
 						}
 					}
 					return false;
-				}else if(dir==" "){
+				}else if(dir=="up"){
 					for(var i=0;i<obj.length;i++){
-						if(ob.player_y-20<obj[i].player_y+10 && obj[i]!=ob){
-							console.log("boomup");
-							console.log(obj[i]);
-							console.log(ob);
+						if((ob.player_y<obj[i].player_y+30 && ob.player_y>obj[i].player_y) && ((ob.player_x>=obj[i].player_x && ob.player_x<=obj[i].player_x+18) ||
+							(ob.player_x+20>=obj[i].player_x+2 && ob.player_x+20<=obj[i].player_x+18)) && obj[i]!=ob){
+							if(obj[i].turnable){
+								setTimeout(function(){pen.fillRect(obj[i].player_x,obj[i].player_y-2,20,20);pen.drawImage(obj[i].down1,obj[i].player_x,obj[i].player_y,20,20);}, framespeed);
+							}
+							return true;
+						}
+					}
+					return false;
+				}else if(dir=="right"){
+					for(var i=0;i<obj.length;i++){
+						if((ob.player_x+30>obj[i].player_x && ob.player_x<obj[i].player_x ) &&((ob.player_y<=obj[i].player_y+18 && ob.player_y>=obj[i].player_y) ||
+							(ob.player_y+18>=obj[i].player_y && ob.player_y+20<=obj[i].player_y+18)) && obj[i]!=ob){
+							if(obj[i].turnable){
+								setTimeout(function(){pen.fillRect(obj[i].player_x,obj[i].player_y-2,20,20);pen.drawImage(obj[i].left0,obj[i].player_x,obj[i].player_y,20,20);}, framespeed);
+							}
+							return true;
+						}
+					}
+					return false;
+				}else if(dir=="left"){
+					for(var i=0;i<obj.length;i++){
+						if((ob.player_x<obj[i].player_x+30 && ob.player_x+20>obj[i].player_x) && ((ob.player_y<=obj[i].player_y+18 && ob.player_y>=obj[i].player_y) ||
+							(ob.player_y+18>=obj[i].player_y && ob.player_y+20<=obj[i].player_y+18)) && obj[i]!=ob){
+							if(obj[i].turnable){
+								setTimeout(function(){pen.fillRect(obj[i].player_x,obj[i].player_y-2,20,20);pen.drawImage(obj[i].right0,obj[i].player_x,obj[i].player_y,20,20);}, framespeed);
+							}
 							return true;
 						}
 					}
